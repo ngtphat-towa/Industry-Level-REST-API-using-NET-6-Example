@@ -28,7 +28,7 @@ public class BreakfastController : ControllerBase
             request.Savory,
             request.Sweet
         );
-        // TODO: save breakfast to database
+
         _breakfastService.CreateBreakfast(breakfast);
 
         var response = new BreakfastResponse(
@@ -66,14 +66,26 @@ public class BreakfastController : ControllerBase
     [HttpPut("{id:guid}")]
     public IActionResult UpdateBreakfast(Guid id, UpsertBreakfastRequest request)
     {
+        var breakfast = new Breakfast(
+            id,
+            request.Name,
+            request.Description,
+            request.StartDateTime,
+            request.EndDateTime,
+            DateTime.UtcNow,
+            request.Savory,
+            request.Sweet
+        );
+        _breakfastService.UpsertBreakfast(breakfast);
 
-        return Ok(request);
+        // TODO : return 201 if a new breakfast was created
+        return NoContent();
     }
     [HttpDelete("{id:guid}")]
     public IActionResult DeleteBreakfast(Guid id)
     {
-
-        return Ok(id);
+        _breakfastService.DeleteBreafast(id);
+        return NoContent();
     }
 }
 
