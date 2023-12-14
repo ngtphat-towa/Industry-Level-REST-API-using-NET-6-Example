@@ -1,16 +1,17 @@
 using BuberBreakfast.Contracts.Breakfast;
 using BuberBreakfast.Models;
 using BuberBreakfast.Services.Breakfasts;
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuberBreakfast.Controllers;
 [ApiController]
-[Route("breakfasts")]
-public class BreakfastController : ControllerBase
+[Route("[controller]")]
+public class BreakfastsController : ControllerBase
 {
     private readonly IBreakfastService _breakfastService;
 
-    public BreakfastController(IBreakfastService breakfastService)
+    public BreakfastsController(IBreakfastService breakfastService)
     {
         _breakfastService = breakfastService;
     }
@@ -50,19 +51,15 @@ public class BreakfastController : ControllerBase
     [HttpGet("{id:guid}")]
     public IActionResult GetBreakfast(Guid id)
     {
-        Breakfast breakfast = _breakfastService.GetBreakfast(id);
-        var response = new BreakfastResponse(
-            breakfast.Id,
-            breakfast.Name,
-            breakfast.Description!,
-            breakfast.StartDateTime,
-            breakfast.EndDateTime,
-            breakfast.LastModifiedDateTime,
-            breakfast.Savory!,
-            breakfast.Sweet!
-        );
-        return Ok(breakfast);
+        ErrorOr<Breakfast> getBreakfastResult = _breakfastService.GetBreakfast(id);
+
+        return getBreakfastResult.Match(
+            breakfast => Ok(MapBreakfastResponse(breakfast)),
+            errors => Problem());
     }
+
+
+
     [HttpPut("{id:guid}")]
     public IActionResult UpdateBreakfast(Guid id, UpsertBreakfastRequest request)
     {
@@ -86,6 +83,19 @@ public class BreakfastController : ControllerBase
     {
         _breakfastService.DeleteBreafast(id);
         return NoContent();
+    }
+    private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
+    {
+        return new BreakfastResponse(
+                    breakfast.Id,
+                    breakfast.Name,
+                    breakfast.Description!,
+                    breakfast.StartDateTime,
+                    breakfast.EndDateTime,
+                    breakfast.LastModifiedDateTime,
+                    breakfast.Savory!,
+                    breakfast.Sweet!
+                );
     }
 }
 

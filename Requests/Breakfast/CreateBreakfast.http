@@ -19,4 +19,4 @@ Content-Type: application/json
 
 ###
 
-GET https://localhost:7094/Breakfasts/c35c7fb7-398f-4028-939f-a33e62246497
+GET https://localhost:5070/breakfasts/c35c7fb7-398f-4028-939f-a33e62246497
