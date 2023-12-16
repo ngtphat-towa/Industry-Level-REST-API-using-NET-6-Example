@@ -1,6 +1,7 @@
-namespace BuberBreakfast.Models;
+namespace BuberBreakfast.Models.Breakfast;
 
-public class Breakfast{
+
+    public class Breakfast{
     public Breakfast(Guid id, string name, string? description, DateTime startDateTime, DateTime endDateTime, DateTime lastModifiedDateTime, List<string>? savory, List<string>? sweet)
     {
         Id = id;
